@@ -1,6 +1,3 @@
-
-const Ship = require('./ship')
-
 class Gameboard{
     constructor(){
         this.Ships = []
@@ -48,7 +45,7 @@ class Gameboard{
     _chekingAttack(x, y){
         if(this.board[x][y]){
                 const shotStatus = this.board[x][y].shot;
-        if (shotStatus === 'missed' || shotStatus === 'hit') {
+        if (shotStatus === 'missed' || shotStatus === 'hit'){
             return true;
         }    
         return false
@@ -59,15 +56,14 @@ class Gameboard{
         if (!this._validate(x) || !this._validate(y))
             return false;
 
-        if(this._chekingAttack(x, y))
+        if (this._chekingAttack(x, y))
             return 'You already attacked this point.'
 
-        // Here will be the logic to attack a ship in the gameboard
-        for( const {coordinates, ship} of this.Ships){
+        for (const {coordinates, ship} of this.Ships){
             if(x > y){
                 for (let i = 0; i < ship.length; i++) {
                     if(coordinates.x == x && coordinates.y + i <= y){
-                    ship.hit()
+                        ship.hit()
                     this.board[x][y] = {shot: 'hit', ship};
                     return 'Hit'
                 }
@@ -76,7 +72,7 @@ class Gameboard{
             else{
                 for (let i = 0; i < ship.length; i++) {
                     if(coordinates.x + i <= x && coordinates.y == y){
-                    ship.hit()
+                        ship.hit()
                     this.board[x][y] = {shot: 'hit', ship};
                     return 'Hit'
                 }
