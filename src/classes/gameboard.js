@@ -6,7 +6,7 @@ class Gameboard{
     }
 
     _validate(coordinate) {
-        return coordinate >= 0 && coordinate <= 9 
+        return coordinate >= 0 && coordinate <= 8
     }
     
     _validateCoordinates(x, y, ship){
@@ -21,10 +21,10 @@ class Gameboard{
         if(this._validateCoordinates(x, y, ship) && ship){
             if(x > y){
                 for (let i = 0; i < ship.length; i++) {
-                    if(this.board[x][y + i] === null)
-                        this.board[x][y + i] = ship;
-                    else
+                    if(this.board[x][y + i] !== null)
                         return 'Invalid placement'
+                    else
+                        this.board[x][y + i] = ship;
                 }
             }
             else{
@@ -82,6 +82,7 @@ class Gameboard{
 
         this.missedShots.push({shot: 'missed', coordinates: {x, y}})
         this.board[x][y] = {shot: 'missed'};
+        return 'Missed'
     }
 
     allShipsSunk(){
