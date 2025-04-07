@@ -4,6 +4,7 @@ class Player {
     constructor(name, type){
         this.name = name
         this.type = type
+        this.turn = false
         this.board = new Board()
     }
 
@@ -15,8 +16,8 @@ class Player {
         return opponent.board.receiveAttack(x, y)
     }
 
-    placeShip(x, y, ship){
-        return this.board.placeShips(x, y, ship)
+    placeShip(){
+        return this.board.placeShips()
     }
 }
 
@@ -24,6 +25,7 @@ class humanPlayer extends Player{
     constructor(name){
         super(name, 'Human')
     }
+
 }
 
 class computerPlayer extends Player{
@@ -31,23 +33,20 @@ class computerPlayer extends Player{
         super('Bot', 'Computer')
     }
 
-    makeMove(opponent){
-        const x = this._getCoordinates()
-        const y = this._getCoordinates()
-        return this.Attack(opponent, x, y)
-    }
-
-    place(ship){
-        do {
-            var x = this._getCoordinates()
-            var y = this._getCoordinates()  
-        } while(Math.abs(x - y) !== ship.length)
-
-    return this.placeShip(x, y, ship)
-    }
-    
     _getCoordinates(){
         return Math.floor(Math.random() * 9)
+    }
+
+    makeMove(opponent){
+        let x, y, attack
+        do{
+            x = this._getCoordinates()
+            y = this._getCoordinates()
+
+            attack = this.Attack(opponent, x, y)
+        }while(attack === 'You already attacked this point.')
+
+        return [attack, x, y]
     }
 }
 
