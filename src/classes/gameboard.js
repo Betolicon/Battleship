@@ -2,7 +2,6 @@ const Ship = require('./ship')
 
 class Gameboard{
     constructor(){
-        this.Ships = []
         this.missedShots = []
         this.board = Array.from({ length: 9 }, () => Array(9).fill(null));
         this.ShipsSunk = []
@@ -54,9 +53,11 @@ class Gameboard{
                 for(let i = 0; i < ship.length; i++)
                     this.board[x + i][y] = ship;
             }
-            this.Ships.push({ship: ship, 
-                coordinates: {x, y},
-                orientation: orientation})
+            const shipData = this.myShips.find(s => s.name === ship.name)
+            if(shipData){
+                shipData.coordinates = {x, y};
+                shipData.orientation = orientation
+            }
             return 'Ship added'
         }
         return 'Ship not added'
@@ -95,7 +96,7 @@ class Gameboard{
         if (this._chekingAttack(x, y))
             return 'You already attacked this point.'
 
-        for (const {coordinates, ship, orientation} of this.Ships){
+        for (const {coordinates, ship, orientation} of this.myShips){
             if(orientation === 'Horizontal'){
                 for (let i = 0; i < ship.length; i++) {
                     if(coordinates.x == x && coordinates.y + i == y){
@@ -122,17 +123,19 @@ class Gameboard{
     }
 
     showShipsSunk(){
-        const ship =  this.Ships.map(({ship}) => ship)
-                                .find(ship => ship.sunk)
-        if(ship && this.ShipsSunk.includes(ship.name) === false){
-            this.ShipsSunk.push(ship.name)
-            return ship.name
+        for(const { ship } of this.myShips){
+            if(ship.sunk){
+                if(!this.ShipsSunk.includes(ship.name)){
+                this.ShipsSunk.push(ship.name)
+                return ship.name
+                }
+            }
         }
         return false
     }
 
     allShipsSunk(){
-        return this.Ships.every(({ship}) => ship.sunk)
+        return this.myShips.every(({ship}) => ship.sunk)
     }
 }
 

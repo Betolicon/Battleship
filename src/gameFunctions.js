@@ -39,6 +39,7 @@ const generateBoard = (player) =>{
 function sendAttack(cell, player) {
     const currentPlayer = Game.players.findIndex(player => player.turn)
         if(currentPlayer === 0){
+            console.log(player2.board.ShipsSunk)
         const attack = player.Attack(player2, cell.dataset.x, cell.dataset.y)
         attack === 'Hit' ? cell.style.backgroundColor = 'red': cell.style.backgroundColor = 'grey'
         messageShip(player, player2)
