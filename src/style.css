@@ -6,16 +6,49 @@ body, html{
     display: flex;
     flex-direction: column;  
     justify-content: center;
-    gap: 0.5rem;
 }
 
-h1, #start, #alert{
+h1, #start, #alert, #restart{
     align-self: center;
     margin: 0;
 }
 
+#restart{
+    opacity: 0;
+    cursor: default;
+}
+
+.control{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
+button{
+    border: 0;
+    color: white;
+    font-weight: bold;
+    border-radius: 1rem;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+#start{
+    background-color: rgb(36, 255, 102);
+}
+
+#confirm, #restart{
+    background-color: rgba(0, 0, 0, 0.66);
+}
+
 #start:hover{
+    transition-duration: 0.8s;
     box-shadow: 0 4px 8px 0 rgba(22, 237, 65, 0.642), 0 6px 20px 0 rgba(0, 255, 0, 0.571)
+}
+
+#confirm:hover, #restart:hover{
+    transition-duration: 0.2s;
+    background-color: rgb(36, 255, 102);
 }
 
 .row{
@@ -54,14 +87,4 @@ dialog{
 
 label{
     align-self: center;
-}
-
-button{
-    background-color: rgb(36, 255, 102);
-    border: 0;
-    color: white;
-    font-weight: bold;
-    border-radius: 1rem;
-    padding: 0.5rem;
-    cursor: pointer;
 }

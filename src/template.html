@@ -9,8 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Battleship</h1>
-    <button id="start">Start Game</button>
+    <div class="control">
+        <h1>Battleship</h1>
+        <h2 id="alert"></h2> 
+        <button id="start">Start Game</button> 
+        <button id="restart">Play again</button>
+    </div>
     <dialog>
         <form>
             <label for="name">Player's name</label>
@@ -18,11 +22,10 @@
             <button id='confirm' type="submit">Confirm</button>
         </form>
     </dialog>
-    <h2 id="alert"></h2>
     <main>
         <div id="player1">
             <div class="gameboard">
-
+                
             </div>
         </div>
 

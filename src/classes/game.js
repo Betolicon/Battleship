@@ -1,6 +1,7 @@
 class Game{
     constructor(){
         this.players = []
+        this.match = true
     }
 
     addPlayers(player1, player2){
@@ -8,8 +9,15 @@ class Game{
             this.players.push(player1)
             this.players.push(player2)
             this.players[0].turn = true
+            this._start()
             return 'Players added correctly'
         }
+    }
+
+    _start(){
+        this.players.forEach((player) =>{
+            player.placeShip()
+        })
     }
 
     switchTurns(){
@@ -21,14 +29,28 @@ class Game{
         }
     }
 
-    checkWinner(){
-        const computer = this.players[1].board.allShipsSunk()
-        const human = this.players[0].board.allShipsSunk()
+    restart(){
+        this.players.forEach((player) => {
+            player.board.missedShots = []
+            player.board.board = Array.from({ length: 9 }, () => Array(9).fill(null));
+            player.board.ShipsSunk = []
 
-        if(computer)
-            return this.players[0].name
-        else if (human)
-            return this.players[1].name
+            for(const { ship } of player.board.myShips){
+                ship.hits = 0
+                ship.sunk = false
+            }  
+        })
+        this.players = []
+        this.match = true
+    }
+
+    checkWinner(){
+        const loser = this.players.find(player => player.board.allShipsSunk())
+        if(loser){
+            this.match = false
+            return loser
+        }
+        return null
     }
 }
 
