@@ -31,36 +31,51 @@ class Gameboard{
         return Math.floor(Math.random() * 2) == 1 ? 'Horizontal' : 'Vertical'
     }
 
-    _placeBoard(x, y, ship, orientation){
-        if(this._validateCoordinates(x, y, ship) && ship){
-            if(orientation == 'Horizontal'){
-                if(ship.length + y >= 9)
-                    return 'Invalid placement'
-                for (let i = 0; i < ship.length; i++) {
-                    if(y + i >= 9 || this.board[x][y + i] !== null)
-                        return 'Invalid placement'
-                }
-                for(let i = 0; i < ship.length; i++)
-                    this.board[x][y + i] = ship;
-            }
-            else{
-                if(ship.length + x >= 9)
-                    return 'Invalid placement'
-                for (let i = 0; i < ship.length; i++) {
-                    if(x + i >= 9 || this.board[x + i][y] !== null)
-                        return 'Invalid placement'
-                }
-                for(let i = 0; i < ship.length; i++)
-                    this.board[x + i][y] = ship;
-            }
-            const shipData = this.myShips.find(s => s.name === ship.name)
-            if(shipData){
-                shipData.coordinates = {x, y};
-                shipData.orientation = orientation
-            }
-            return 'Ship added'
+    _valideteFit(x, y, ship, isHorizontal){
+        const directionX = isHorizontal ? ship + y : y
+        const directionY = isHorizontal ? x : ship + x
+
+        if(directionX >= 9 || directionY >= 9)
+            return false
+        return true
+    }
+
+    _isEmpty(x, y, ship, isHorizontal){
+        for (let i = 0; i < ship; i++) {
+            const directionX = isHorizontal ? x : i + x
+            const directionY = isHorizontal ? i + y : y
+            if(this.board[directionX][directionY] !== null)
+                return false
         }
-        return 'Ship not added'
+        return true
+    }
+
+    _placeInTheBoard(x, y, ship, isHorizontal){
+        for (let i = 0; i < ship.length; i++) {
+            const directionX = isHorizontal ? x : i + x
+            const directionY = isHorizontal ? i + y : y
+            this.board[directionX][directionY] = ship
+        }
+    }
+    _placeBoard(x, y, ship, orientation){
+        const isHorizontal = orientation === 'Horizontal'
+        if(!this._validateCoordinates(x, y, ship))
+            return 'Ship not added'
+
+        if(!this._valideteFit(x, y, ship.length, isHorizontal))
+            return 'Invalid placement' 
+
+        if(!this._isEmpty(x, y, ship.length, isHorizontal))
+            return 'Invalid placement' 
+
+        this._placeInTheBoard(x, y, ship, isHorizontal)
+
+        const shipData = this.myShips.find(s => s.name === ship.name)
+        if(shipData){
+            shipData.coordinates = {x, y};
+            shipData.orientation = orientation
+        }
+        return 'Ship added'
     }
 
     _getCoordinates(){
@@ -89,6 +104,16 @@ class Gameboard{
     }
     }
 
+    _Attack(x, y){
+        if(this.board[x][y] !== null){
+            const ship = this.board[x][y]
+            ship.hit()
+            this.board[x][y] = {shot: 'hit', ship: ship};
+            return true
+        }
+        return false
+    }
+
     receiveAttack(x, y){
         if (!this._validate(x) || !this._validate(y))
             return false;
@@ -96,26 +121,8 @@ class Gameboard{
         if (this._chekingAttack(x, y))
             return 'You already attacked this point.'
 
-        for (const {coordinates, ship, orientation} of this.myShips){
-            if(orientation === 'Horizontal'){
-                for (let i = 0; i < ship.length; i++) {
-                    if(coordinates.x == x && coordinates.y + i == y){
-                        ship.hit()
-                    this.board[x][y] = {shot: 'hit', ship};
-                    return 'Hit'
-                }
-                }
-            }
-            else{
-                for (let i = 0; i < ship.length; i++) {
-                    if(coordinates.x + i == x && coordinates.y == y){
-                        ship.hit()
-                    this.board[x][y] = {shot: 'hit', ship};
-                    return 'Hit'
-                }
-                }
-            }
-        }
+        if(this._Attack(x, y))
+            return 'Hit'
 
         this.missedShots.push({shot: 'missed', coordinates: {x, y}})
         this.board[x][y] = {shot: 'missed'};
